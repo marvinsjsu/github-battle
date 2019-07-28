@@ -85,38 +85,43 @@ export default class Popular extends React.Component {
   //Component Lifecycle
 
   // good for establishing the initial state of the component
-  constructor (props) {
-    super(props);
-    this.state = {
-      selectedLanguage: 'All',
-      repos: {},
-      error: null
-    };
+  // constructor (props) {
+  //   super(props);
+  //   this.state = {
+  //     selectedLanguage: 'All',
+  //     repos: {},
+  //     error: null
+  //   };
 
-    this.updateLanguage = this.updateLanguage.bind(this);
-    this.isLoading = this.isLoading.bind(this);
-  }
+  //   this.updateLanguage = this.updateLanguage.bind(this);
+  //   this.isLoading = this.isLoading.bind(this);
+  // }
+  state = {
+    selectedLanguage: 'All',
+    repos: {},
+    error: null
+  };
 
   // invoked once the component is mounted to the DOM
   // good for making AJAX requests
   componentDidMount() {
     this.mounted = true;
     this.updateLanguage(this.state.selectedLanguage);
-  }
+  };
 
   // invoked immediately after updating occurs (local state or props)
   // good for AJAX requests based on changing props or DOM operations
-  componentDidUpdate(prevProps, prevState) {
+  // componentDidUpdate(prevProps, prevState) {
 
-  }
+  // };
 
   // called right before a component is unmounted
   // good for cleaning up listeners
   componentWillUnmount() {
     this.mounted = false;
-  }
+  };
 
-  updateLanguage(selectedLanguage) {
+  updateLanguage = (selectedLanguage) => {
     if (this.mounted) {
       this.setState({
         selectedLanguage,
@@ -147,13 +152,13 @@ export default class Popular extends React.Component {
           }
         })
     }
-  }
+  };
 
-  isLoading() {
+  isLoading = () => {
     const { selectedLanguage, repos, error } = this.state;
 
     return !repos[selectedLanguage] && error === null;
-  }
+  };
 
   // other Component Lifecycles
   // - getDerivedStateFromProps

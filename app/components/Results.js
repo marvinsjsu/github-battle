@@ -5,6 +5,8 @@ import { FaCompass, FaBriefcase, FaUsers, FaUserFriends, FaCode, FaUser } from '
 import Card from './Card';
 import Loading from './Loading';
 import Tooltip from './Tooltip';
+import queryString from 'query-string';
+import { Link, Redirect } from 'react-router-dom';
 
 function ProfileList ({ profile }) {
   return (
@@ -58,26 +60,32 @@ export default class Results extends React.Component {
   }
 
   componentDidMount () {
-    const { playerOne, playerTwo } = this.props;
+    const { playerOne, playerTwo } = queryString.parse(this.props.location.search);
 
-    battle([ playerOne, playerTwo ])
-      .then((players) => {
-        this.setState({
-          winner: players[0],
-          loser: players[1],
-          error: null,
-          loading: false
-        });
-      }).catch(({ message }) => {
-        this.setState({
-          error: message,
-          loading: false
-        });
-      })
+    if (playerOne === undefined || playerTwo === undefined) {
+      this.setState({
+        error: `We are missing at least one player info.`,
+        loading: false
+      });
+    } else {
+      battle([ playerOne, playerTwo ])
+        .then((players) => {
+          this.setState({
+            winner: players[0],
+            loser: players[1],
+            error: null,
+            loading: false
+          });
+        }).catch(({ message }) => {
+          this.setState({
+            error: message,
+            loading: false
+          });
+        })
+    }
   }
   render () {
     const { winner, loser, error, loading } = this.state;
-    const { onReset } = this.props;
 
     if (loading === true) {
       return <Loading text='Battling'/>;
@@ -110,19 +118,13 @@ export default class Results extends React.Component {
           <ProfileList profile={loser.profile} />
         </Card>
       </div>
-      <button
+      <Link
         className='btn btn-dark btn-space'
-        onClick={onReset}
+        to='/battle'
       >
         Reset
-      </button>
+      </Link>
       </React.Fragment>
     );
   }
 }
-
-Results.propTypes = {
-  playerOne: PropTypes.string.isRequired,
-  playerTwo: PropTypes.string.isRequired,
-  onReset: PropTypes.func.isRequired
-};

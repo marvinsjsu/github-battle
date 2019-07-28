@@ -100,6 +100,7 @@ export default class Popular extends React.Component {
   // invoked once the component is mounted to the DOM
   // good for making AJAX requests
   componentDidMount() {
+    this.mounted = true;
     this.updateLanguage(this.state.selectedLanguage);
   }
 
@@ -112,31 +113,38 @@ export default class Popular extends React.Component {
   // called right before a component is unmounted
   // good for cleaning up listeners
   componentWillUnmount() {
-
+    this.mounted = false;
   }
 
   updateLanguage(selectedLanguage) {
-    this.setState({
-      selectedLanguage,
-      error: null
-    });
+    if (this.mounted) {
+      this.setState({
+        selectedLanguage,
+        error: null
+      });
+    }
+
 
     if (!this.state.repos[selectedLanguage]) {
       fetchPopularRepos(selectedLanguage)
         .then((data) => {
-          this.setState(({ repos }) => ({
-            repos: {
-              ...repos,
-              [selectedLanguage]: data
-            }
-          }));
+          if (this.mounted) {
+            this.setState(({ repos }) => ({
+              repos: {
+                ...repos,
+                [selectedLanguage]: data
+              }
+            }));
+          }
         })
         .catch((error) => {
           console.warn(`Error fetching repos: `, error);
 
-          this.setState({
-            error: `There was an error fetching the repositories.`
-          });
+          if (this.mounted) {
+            this.setState({
+              error: `There was an error fetching the repositories.`
+            });
+          }
         })
     }
   }

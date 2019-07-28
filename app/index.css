@@ -263,12 +263,12 @@ li {
   background: rgba(0, 0, 0, 0.3);
 }
 
-.light-btn {
+.btn-light {
   color: #000;
   background: #aaa8a8;
 }
 
-.light-btn:disabled {
+.btn-light:disabled {
   background: #292929;
 }
 
